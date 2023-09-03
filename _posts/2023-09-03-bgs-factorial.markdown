@@ -68,13 +68,13 @@ and precompute $\Delta(m, k, d)$ in $O(d)$ using the fact that for $k > 0$,
 
 $$\Delta(m, k, d) = \frac{m+k}{m+k-d-1}\Delta(m, k - 1, d)$$
 
-The second term is a sum of a product of $\dfrac{h(i)}{\delta(i, d)}$, a function of $i$, and
+The second term is the sum of a product of $\dfrac{h(i)}{\delta(i, d)}$, a function of $i$, and
 $\dfrac1{m + k - i}$, a function of $-i$. This lets us express the sum as a convolution. In particular, we define the polynomials
 
 $$p(x) := \sum_{i=0}^d \frac{h(i)}{\delta(i, d)} x^i,\ \ q(x) := \sum_{i=0}^{2d} \frac{1}{a + i - d}x^i$$
 
 Then for $0 \leq k \leq d$, the
-$(k + d)$-th coefficient is
+$(k + d)$-th coefficient of their product $p(x)q(x)$ is
 
 $$
 \begin{align*}
@@ -83,17 +83,19 @@ $$
 \end{align*}
 $$
 
-which is exactly the second term. To relate back to the original problem, where given $G_d(0)$, we want to compute $G_d(a)$ for $a = d, dv,$ and $dv + d$, we can
+which is exactly the second term. To relate back to the original problem, where we are given $G_d(0)$, we want to compute $G_d(a)$ for $a = d, dv,$ and $dv + d$. We can
 
 - Choose $h(x) = g_d(vx)$ and $m = \frac av$
 - Compute
 $h(m), h(m + 1), \dots, h(m + k)$
 which since $h(x) = g_d(vx)$, is $g_d(a), g_d(a + v), \dots, g_d(a + dv) = G_d(a)$
 
+<!--
 ## Problems
 
 - [Fast Factorial Calculator 3 - DMOJ](https://dmoj.ca/problem/factorial3)
 - [Shift of Sampling Points of Polynomial - Library Checker](https://judge.yosupo.jp/problem/shift_of_sampling_points_of_polynomial)
+-->
 
 ## Open Questions
 
