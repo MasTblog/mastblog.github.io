@@ -2,7 +2,6 @@
 layout: post
 title:  "BGS Factorial"
 date:   2023-09-03 00:22:04 -0700
-categories: jekyll
 ---
 
 <script type="text/x-mathjax-config">
@@ -22,11 +21,8 @@ categories: jekyll
 <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 
-# BGS Factorial
-
 In this article we compute $n! \bmod p$ in
 $O(\sqrt p \log p)$ time.
-
 The time complexity is in terms of $p$ since if $n > p$, then $n!$ contains $p$ as a factor and
 $n! \bmod p$ is just 0.
 
@@ -35,12 +31,6 @@ $n! \bmod p$ is just 0.
 - This article is mainly based off of [this article](https://web.archive.org/web/20201026035551/https://min-25.hatenablog.com/entry/2017/04/10/215046) by Min_25
 - The math and derivations are from *Linear recurrences with polynomial coefficients and application to integer factorization and Cartier-Manin operator* by Alin Bostan, Pierrick Gaudry, and Eric Schost. [(Link)](https://mathexp.eu/bostan/publications/BoGaSc07.pdf)
 	- To my knowledge, this is the first written record of this method
-
-## TODO
-- Reconcile use of n and p in complexity
-- Spellcheck
-- [At the end] Write a concise summary without derivations
-	- Concise version goes on CF, verbose version goes on personal site
 
 ## Prerequisites
 
@@ -54,25 +44,29 @@ We define a polynomial $f(x) = \prod_{i=1}^n (x + i)$. We note that $f(0) = \pro
 
 Computing $f(x)$ this way is slow and doesn't yield any benefit. Instead, we use a square root decomposition strategy.
 
-Let $v$ be $\lfloor \sqrt n \rfloor$ and
+Let $v$ be $\lfloor \sqrt p \rfloor$ and
 $g(x) = \prod_{i=1}^v (x+i)$. Then $g(0) = v!$,
 $g(v) = (v + 1)(v + 2)\cdots(2v)$, and so on
 giving us the formula
-$$n! = \left(\prod_{i=0}^{v-1} g(vi) \right)\cdot \left(\prod_{i=v^2+1}^n i \right)$$
+
+$$ n! = \left(\prod_{i=0}^{v-1} g(vi) \right)\cdot \left(\prod_{i=v^2+1}^n i \right) $$
 
 The first product computes $(v^2)!$ and the
 second product is just the product of the rest
 of the terms since $v^2$ can be a little less than $n$. There are at most $O(\sqrt p)$ such terms.
 
-## $O(\sqrt p \log^2 p)$ Method
+The rest of the article deals with computing the first product, evaluating $g(0), g(v), g(2v), \dots, g((v - 1)v)$.
+
+### $O(\sqrt p \log^2 p)$ Method
 
 Directly applying the above formula, $g(x)$
 is a polynomial with $O(\sqrt p)$ coefficients
 and we want to evaluate it at $O(\sqrt p)$
-points, which can be done in [$O(\sqrt p \log^2 p)$ time](https://cp-algorithms.com/algebra/polynomial.html#multi-point-evaluation).
+points, which can be done in $O(\sqrt p \log^2 p)$ time
+using [multipoint evaluation](https://cp-algorithms.com/algebra/polynomial.html#multi-point-evaluation).
 
 
-## $O(\sqrt p \log p)$ Method
+### $O(\sqrt p \log p)$ Method
 
 To save a log factor, we can take advantage of certain facts.
 
@@ -81,16 +75,16 @@ which form an arithmetic progression.
 In addition,
 the points at which we want to evaluate $g(x)$
 are $0, v, 2v, \dots, (v - 1)v$, also an
-arithmetic progression. This allows us to perform Lagrange interpolation faster.
+arithmetic progression.
 
 Let $g_d(x) = \prod_{i=1}^d (x+i)$ be a degree-$d$ polynomial. The main idea is, given
 $g_d(0), g_d(v), \dots, g_d(dv)$, we compute
 $g_{2d}(0), g_{2d}(v), \dots, g_{2d}(2dv)$ in $O(d \log d)$ time.
 
-Then the overall time complexity for computing
-$g(0), g(v), \dots, g((v - 1)v)$ is given by
-the recurrence $T(v) = T(v/2) + O(v \log v)$
-which just comes out to $O(v \log v)$ which is $O(\sqrt p \log p)$.
+We start with $d = 1$, then keep doubling until we have
+$d \geq v$, which gives us $g(x)$. Our overall time complexity is given by
+$O(v \log v) + O\left(\frac v2 \log \frac v2\right) + O\left(\frac v4 \log \frac v4\right) + \dots = O(v \log v)$
+which is $O(\sqrt p \log p)$.
 
 Let $G_d(i)$ be the sequence
 $[g_d(i), g_d(i + v), g_d(i + 2v), \dots, g_d(i + dv)]$. Given $[g_d(0), g_d(v), g_d(2v), \dots, g_d(dv)] = G_d(0)$, the plan is to
@@ -118,14 +112,14 @@ h(m + k) &= \sum_{i=0}^d h(i) \prod_{j = 0, j \neq i}^d \frac{m+k-j}{i-j} \\
 \end{align*}
 $$
 
-Let $\delta(i, d) = \prod_{j=0,j\neq i}^d (i-j)$ and $\tilde h(i) = \frac{h(i)}{\delta(i, d)}$.
+Let $\delta(i, d) = \prod_{j=0,j\neq i}^d (i-j)$.
 We can precompute values using the
 formula $\frac1{\delta(i,d)} = \frac{i-d-1}i
 \frac1{\delta(i-1,d)}$.
 
 $$
 \begin{align*}
-h(m + k) &= \sum_{i=0}^d \tilde h(i) \prod_{j=0,j\neq i}^d (m + k - j) \\
+h(m + k) &= \sum_{i=0}^d \frac{h(i)}{\delta(i, d)} \prod_{j=0,j\neq i}^d (m + k - j) \\
 \end{align*}
 $$
 
@@ -134,8 +128,8 @@ is the product of all terms $\prod_{j=0}^d (m + k - j)$ except for the i-th term
 
 $$
 \begin{align*}
-h(m + k) &= \sum_{i=0}^d \tilde h(i) \frac1{m + k - i} \prod_{j=0}^d (m + k - j) \\
-&= \left(\prod_{j=0}^d (m + k - j) \right) \left( \sum_{i=0}^d \tilde h(i) \frac1{m + k - i} \right) \\
+h(m + k) &= \sum_{i=0}^d \frac{h(i)}{\delta(i, d)} \frac1{m + k - i} \prod_{j=0}^d (m + k - j) \\
+&= \left(\prod_{j=0}^d (m + k - j) \right) \left( \sum_{i=0}^d \frac{h(i)}{\delta(i, d)} \frac1{m + k - i} \right) \\
 \end{align*}
 $$
 
@@ -143,15 +137,15 @@ We can precompute the first term for all $k = 0, 1, \dots, d$. Let $\Delta(m, k,
 $\Delta(m, k, d) = \frac{m+k}{m+k-d-1}\Delta(m, k - 1, d)$, giving us a $O(d)$ way
 to precompute it.
 
-The right-hand side is a sum of a product of $\tilde h(i)$, a function of $i$, and
+The right-hand side is a sum of a product of $\frac{h(i)}{\delta(i, d)}$, a function of $i$, and
 $\frac1{m + k - i}$, a function of $-i$. This lets us express it as a convolution.
 
 <!-- Use [p(x)]_i notation here too -->
-In particular, we define the polynomials $p(x) = \sum_{i=0}^d \tilde h(i) x^i$ and $q(x) = \sum_{i=0}^{2d} \frac{1}{a + i - d}x^i$
+In particular, we define the polynomials $p(x) = \sum_{i=0}^d \frac{h(i)}{\delta(i, d)} x^i$ and $q(x) = \sum_{i=0}^{2d} \frac{1}{a + i - d}x^i$
 
 Then their product $r(x) = p(x)q(x)$ is
 $$
-\sum_{i = 0}^d \sum_{j=0}^{2d} \tilde h(i)\frac{1}{a + i - d} x^{i + j}
+\sum_{i = 0}^d \sum_{j=0}^{2d} \frac{h(i)}{\delta(i, d)}\frac{1}{a + i - d} x^{i + j}
 $$
 
 Let $[f(x)]_i$ denote the $i$-th coefficent of $f(x)$.
@@ -160,7 +154,7 @@ Then the $c$-th coefficient of $r(x)$, or $[r(x)]_c$ is
 $$
 \begin{align*}
 &\phantom{=}\sum_{i = 0}^{\min(c, d)} [p(x)]_i [q(x)]_{c-i} \\
-&= \sum_{i = 0}^{\min(c, d)} \tilde h(i) \frac{1}{m + (c - i) - d}
+&= \sum_{i = 0}^{\min(c, d)} \frac{h(i)}{\delta(i, d)} \frac{1}{m + (c - i) - d}
 \end{align*}
 $$
 
@@ -171,9 +165,9 @@ $[r(x)]_{k + d}$ is
 $$
 \begin{align*}
 &\phantom{=}\sum_{i = 0}^{\min(k+d, d)}
-\tilde h(i) \frac{1}{m + (k + d - i) - d} \\
+\frac{h(i)}{\delta(i, d)} \frac{1}{m + (k + d - i) - d} \\
 &=\sum_{i = 0}^d
-\tilde h(i) \frac{1}{m + k - i}
+\frac{h(i)}{\delta(i, d)} \frac{1}{m + k - i}
 \end{align*}
 $$
 
@@ -198,3 +192,10 @@ To relate back to the original problem, where given $G_d(0)$, we want to compute
 - Using the above, we compute
 $h(m), h(m + 1), \dots, h(m + k)$
 which since $h(x) = g_d(vx)$, is $g_d(a), g_d(a + v), \dots, g_d(a + dv) = G_d(a)$
+
+
+## Constant-Factor Optimizations
+
+- The bottleneck of this algorithm is computing a $d$ by $2d$ size convolution. This can supposedly
+be reduced to just a $d$ by $d$ convolution using the "[middle product](https://inria.hal.science/inria-00071921/document)" idea
+- As usual, if $p$ is not known at compile time, [Montgomery Multiplication](https://cp-algorithms.com/algebra/montgomery_multiplication.html) can be used
