@@ -2,24 +2,8 @@
 layout: post
 title:  "BGS Factorial"
 date:   2023-09-03 00:22:04 -0700
+toc: true
 ---
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ["\\(", "\\)"] ],
-      displayMath: [ ['$$', '$$'], ["\\[", "\\]"] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    }
-    //,
-    //displayAlign: "left",
-    //displayIndent: "2em"
-  });
-</script>
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
 
 In this article we compute $n! \bmod p$ in
 $O(\sqrt p \log p)$ time.
