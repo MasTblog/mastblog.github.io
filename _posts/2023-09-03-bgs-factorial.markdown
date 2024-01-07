@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "BGS Factorial"
-date:   2023-09-03 01:23:04 -0700
+date:   2099-09-03 01:23:04 -0700
 ---
 
 In this article we compute $n! \bmod p$ in

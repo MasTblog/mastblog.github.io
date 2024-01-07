@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "BGS Factorial (Detailed Version)"
-date:   2023-09-03 00:22:04 -0700
+date:   2099-09-03 00:22:04 -0700
 toc: true
 ---
 <!-- date is set in the future to disable viewing -->
