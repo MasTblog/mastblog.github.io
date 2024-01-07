@@ -22,9 +22,9 @@ kramdown:
   math_engine: mathjax
   syntax_highlighter: rouge
 
-title: MasT's Blog
+title: Richard Yi's Blog
 description: >- # this means to ignore newlines until "baseurl:"
-  Sometimes I write about algorithms
+  Personal projects and algorithms in competitive programming
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  richardyi25
