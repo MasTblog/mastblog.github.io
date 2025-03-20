@@ -488,7 +488,7 @@ To eventually jump to `print_flag`, we
 
 Since we need to do a lot of computation at runtime as we interface with the program, we use pwntools
 
-```py3
+```py
 from pwn import *
 from sys import argv
 
@@ -735,7 +735,7 @@ The full exploit now becomes clear:
 I had trouble with segfaults when not using short jump, so I ended up setting up all 10
 entries and putting the shellcode in the 10th entry so it's close to `feedback`.
 
-```py3
+```py
 from pwn import *
 from sys import argv
 
