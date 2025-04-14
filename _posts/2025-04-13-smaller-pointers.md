@@ -86,7 +86,7 @@ int zigzag(int node_idx){
 
 While we almost always benefit from using BSS-allocated nodes instead of heap nodes where appropriate, in both time and space, the only real benefit to storing indexes instead of pointers is space, and it is even at the cost of time since the computer now must do pointer artithmetic every time it "dereferences" the index.
 
-As such, the only appropriate time to do this is if the allowed memory limit is tight, which can happen with persistent segment trees or 2D range trees which use $\Theta(n \log n)$ nodes. Of course, competitors should first consider reducing the number of fields in the node structs
+As such, the only appropriate time to do this is if the allowed memory limit is tight, which can happen with persistent segment trees or 2D range trees which use $\Theta(n \log n)$ nodes or with [square root decomposition](https://cp-algorithms.com/data_structures/sqrt_decomposition.html) solutions that use $\Theta(n \sqrt n)$ nodes. Of course, competitors should first consider reducing the number of fields in the node structs
 and whether they are ordered to minimize struct padding. Storing `int` indexes instead of pointers will only save 4 bytes per pointer in 64-bit machines, which almost all contest graders use.
 
 In these cases, we can take advantage of C++'s operator overloading to keep pointer semantics while using indexes:
@@ -133,9 +133,9 @@ bool pnode::operator==(pnode &other) {
 Now we can write all of our functions how we would before, replacing `node*` with `pnode`.
 
 Modern programming contests generally don't test contestants' abilities
-to optimize for space, so problems where a lot of memory is intended to be needed will set a generous memory limit, but this trick can be used to get a memory-hungry solution within the memory limit.
+to optimize for space, so problems where a lot of memory is intended to be needed will set a generous memory limit, but this trick can be used to get an unintended memory-hungry solution within the memory limit, esepcially given that a lot of problems admit easier, unintended solutions that use square root decompoisition.
 
-In the examples above, the original struct takes up 24 bytes (due to padding), and the struct with `int` indexes takes up only 12. If 10 million nodes are required in a solution, which can easily be the case with data structures that use $\Theta(n \log n)$ nodes, we can save 120MB, which can make the difference between making the memory limit or not.
+In the examples above, the original struct takes up 24 bytes (due to padding), and the struct with `int` indexes takes up only 12. If 10 million nodes are required in a solution, which can easily be the case with solution that use $\Theta(n \log n)$ or $\Theta(n \sqrt n)$ nodes, we can save 120MB, which can make the difference between making the memory limit or not.
 
 In [Database](https://dmoj.ca/problem/tle17c7p4), a problem with a persistent segment tree solution, I was able to save 63MB by switching
 from heap allocation to BSS allocation, and 33MB by switching from pointers to indexes, so actual savings may vary.
