@@ -5,8 +5,6 @@ date:   2025-03-18 00:22:04 -0700
 toc: true
 ---
 
-# PicoCTF 2025 Binary Exploit Roundup
-
 Despite no heap exploitation problems in this year's PicoCTF, the binary exploitation problems were both very interesting and informative.
 
 ## PIE TIME
@@ -287,8 +285,8 @@ Computing the MD5 hash of /root/flag.txt....
 
 We have two possible plans of attack:
 
-1. Hijack `/bin/bash` with a program to print out the flag, which should work since it would be run with root priviliges
-2. Hijack `md5sum` with `cat` to just print out the flag
+1. Replace `/bin/bash` with a program to print out the flag, which should work since it would be run with root priviliges
+2. Replace `md5sum` with `cat` to just print out the flag
 
 We check the protections of both files:
 
@@ -453,7 +451,7 @@ which we will use to overwrite the return address with the location to `print_fl
 We've covered what `%lx` does, let's look at two more relevant format specifiers:
 
 - `printf("%s", str)` where `str` is a `char*` will print out the memory that the pointer points to, one byte at a time, as text, until it encounters a `0` byte.
-- `printf("%n", &num)` where `num` is an `int` (and `&num` is a pointer to it), will write to `num` how many bytes have been written so far in the format string before the specifier. For example, `printf("12345678901234%n", &num)` will write 14 bytes to `num`.
+- `printf("%n", &num)` where `num` is an `int` (and `&num` is a pointer to it), will write to `num` how many bytes have been written so far in the format string before the specifier. For example, `printf("12345678901234%n", &num)` will write the number 14 to `num`.
     - The variants `%hn` and `%hhn` instead of `%n` instead require a pointer to `short` and `char` respectively.
 
 This means in order to view an address of our choosing using `printf(buf)` call,
